@@ -42,6 +42,16 @@ npm start
 
 The server will start on the port specified in your `.env` file.
 
+## Docker
+
+```bash
+# Build the Docker image
+docker build -t a5ket/countries .
+
+# Run the container
+docker run -p 3000:3000 -e APP_PORT=3000 -e DATABASE_URL="file:./dev.sqlite" a5ket/countries
+```
+
 ## Linting
 
 For linting:
