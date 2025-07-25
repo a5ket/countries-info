@@ -1,9 +1,7 @@
 import express from 'express'
 import { fetchCountries, fetchCountryBorders, fetchCountryFlagImageUrl, fetchCountryPopulation } from '../api'
 
-
 const router = express.Router()
-
 
 router.get('/', async (req, res) => {
     try {
@@ -17,7 +15,6 @@ router.get('/', async (req, res) => {
     }
 })
 
-
 router.get('/:countryCode', async (req, res) => {
     const countryCode = req.params.countryCode.toUpperCase()
 
@@ -25,7 +22,7 @@ router.get('/:countryCode', async (req, res) => {
         const [borders, population, flagUrl] = await Promise.all([
             fetchCountryBorders(countryCode),
             fetchCountryPopulation(countryCode),
-            fetchCountryFlagImageUrl(countryCode)
+            fetchCountryFlagImageUrl(countryCode),
         ])
 
         if (!borders || !population || !flagUrl) {
@@ -36,8 +33,8 @@ router.get('/:countryCode', async (req, res) => {
             data: {
                 borders,
                 population,
-                flagUrl
-            }
+                flagUrl,
+            },
         })
     } catch (error) {
         console.error('Failed to fetch country info', error)
@@ -45,6 +42,5 @@ router.get('/:countryCode', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' })
     }
 })
-
 
 export default router

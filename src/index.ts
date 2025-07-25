@@ -12,7 +12,6 @@ if (!APP_PORT) {
     throw new Error('Missing APP_PORT')
 }
 
-
 export const app = express()
 
 app.use(logginMiddleware)
@@ -21,7 +20,6 @@ app.use(express.json())
 
 app.use('/countries', countriesRoutes)
 app.use('/users', usersRoutes)
-
 
 app.listen(APP_PORT, (error) => {
     if (error) {

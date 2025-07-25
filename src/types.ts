@@ -6,19 +6,16 @@ export interface CountryPopulationDTO {
     }
 }
 
-
 export interface CountryFlagDTO {
     iso3: string
     flag: string
 }
-
 
 export interface Holiday {
     name: string
     countryCode: string
     date: Date
 }
-
 
 export interface CreateUserHolidaysDTO {
     countryCode: string

@@ -1,7 +1,6 @@
 import { CountryFlagDTO, Holiday } from './types'
 
-
-async function fetchApi<T = any>(url: string): Promise<T | undefined> {
+async function fetchApi<T = object>(url: string): Promise<T | undefined> {
     const response = await fetch(url)
 
     if (response.status === 404) {
@@ -10,7 +9,6 @@ async function fetchApi<T = any>(url: string): Promise<T | undefined> {
 
     return response.json()
 }
-
 
 async function fetchPost(url: string, body: object) {
     const options: RequestInit = {
@@ -30,25 +28,23 @@ async function fetchPost(url: string, body: object) {
     return response.json()
 }
 
-
 export async function fetchCountries() {
     return fetchApi('https://date.nager.at/api/v3/AvailableCountries')
 }
-
 
 export async function fetchCountryBorders(countryCode: string) {
     return fetchApi(`https://date.nager.at/api/v3/CountryInfo/${countryCode}`)
 }
 
-
 export async function fetchCountryPopulation(countryCode: string) {
-    return fetchPost('https://countriesnow.space/api/v0.1/countries/population', { iso3: countryCode })
-        .then(res => res?.data)
+    return fetchPost('https://countriesnow.space/api/v0.1/countries/population', {
+        iso3: countryCode,
+    }).then((res) => res?.data)
 }
 
 export async function fetchCountryFlagImageUrl(countryCode: string) {
-    return fetchApi('https://countriesnow.space/api/v0.1/countries/flag/images')
-        .then(res => {
+    return fetchApi<{ data: CountryFlagDTO[] }>('https://countriesnow.space/api/v0.1/countries/flag/images').then(
+        (res) => {
             if (!res) {
                 return undefined
             }
@@ -61,7 +57,8 @@ export async function fetchCountryFlagImageUrl(countryCode: string) {
             }
 
             return country.flag
-        })
+        },
+    )
 }
 
 export async function fetchPublicHolidays(countryCode: string, year: number): Promise<Holiday[] | undefined> {
@@ -73,4 +70,3 @@ export async function fetchPublicHolidays(countryCode: string, year: number): Pr
 
     return response.json()
 }
-

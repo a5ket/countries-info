@@ -7,13 +7,12 @@ export function findUserCalendarEvents(userId: string) {
         where: {
             calendars: {
                 some: {
-                    userId
-                }
-            }
-        }
+                    userId,
+                },
+            },
+        },
     })
 }
-
 
 export function createUserCalendarEvents(userId: string, holidays: Holiday[]) {
     return prisma.$transaction(async (transaction) => {
@@ -24,29 +23,29 @@ export function createUserCalendarEvents(userId: string, holidays: Holiday[]) {
                 where: {
                     countryCode_name: {
                         countryCode: holiday.countryCode,
-                        name: holiday.name
-                    }
+                        name: holiday.name,
+                    },
                 },
                 update: {},
                 create: {
                     countryCode: holiday.countryCode,
                     name: holiday.name,
-                    date: new Date(holiday.date)
-                }
+                    date: new Date(holiday.date),
+                },
             })
 
             await transaction.userCalendar.upsert({
                 where: {
                     userId_calendarEventId: {
                         userId,
-                        calendarEventId: event.id
-                    }
+                        calendarEventId: event.id,
+                    },
                 },
                 update: {},
                 create: {
                     userId,
-                    calendarEventId: event.id
-                }
+                    calendarEventId: event.id,
+                },
             })
 
             createdEvents.push(event)

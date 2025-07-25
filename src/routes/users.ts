@@ -5,9 +5,7 @@ import { createUser, findUser } from '../db/users'
 import { CreateUserHolidaysDTO, Holiday } from '../types'
 import { isValidationError, validateCreateUserHolidays } from '../validation'
 
-
 const router = express.Router()
-
 
 router.get('/:userId/calendar/holidays', async (req, res) => {
     const userId = req.params.userId
@@ -15,7 +13,6 @@ router.get('/:userId/calendar/holidays', async (req, res) => {
 
     return res.json({ data: events })
 })
-
 
 router.post('/:userId/calendar/holidays', async (req, res) => {
     const userId = req.params.userId
@@ -31,7 +28,10 @@ router.post('/:userId/calendar/holidays', async (req, res) => {
         data = validateCreateUserHolidays(req.body)
     } catch (error) {
         console.error('Error validating user holidays', error)
-        return res.status(422).json({ error: 'Invalid data', details: isValidationError(error) ? error.issues : undefined })
+        return res.status(422).json({
+            error: 'Invalid data',
+            details: isValidationError(error) ? error.issues : undefined,
+        })
     }
 
     let availableHolidays: Holiday[] | undefined
@@ -43,12 +43,13 @@ router.post('/:userId/calendar/holidays', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' })
     }
 
-
     if (!availableHolidays) {
         return res.status(404).json({ error: 'Country not found' })
     }
 
-    const holidaysToCreate = data.holidays ? availableHolidays.filter(holiday => data.holidays.includes(holiday.name)) : availableHolidays
+    const holidaysToCreate = data.holidays
+        ? availableHolidays.filter((holiday) => data.holidays.includes(holiday.name))
+        : availableHolidays
     try {
         const createdEvents = await createUserCalendarEvents(userId, holidaysToCreate)
 
@@ -58,6 +59,5 @@ router.post('/:userId/calendar/holidays', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' })
     }
 })
-
 
 export default router
