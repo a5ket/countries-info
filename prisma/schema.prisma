@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String         @id @default(uuid())
+  calendars UserCalendar[]
+}
+
+model CalendarEvent {
+  id          String         @id @default(uuid())
+  countryCode String
+  name        String
+  date        DateTime
+  calendars   UserCalendar[]
+
+  @@unique([countryCode, name])
+}
+
+model UserCalendar {
+  id              String @id @default(uuid())
+  userId          String
+  calendarEventId String
+
+  user          User          @relation(fields: [userId], references: [id])
+  calendarEvent CalendarEvent @relation(fields: [calendarEventId], references: [id])
+
+  @@unique([userId, calendarEventId])
+}
